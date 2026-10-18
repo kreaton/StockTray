@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows7.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>StockTray</AssemblyName>
+    <RootNamespace>StockTray</RootNamespace>
+    <StartupObject>StockTray.Program</StartupObject>
+    <ApplicationIcon>stock_chart_icon.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="stock_chart_icon.ico" />
+    <EmbeddedResource Include="preview_master.png" />
+  </ItemGroup>
+
+</Project>

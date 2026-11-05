@@ -1,8 +1,16 @@
-<img src="StockTray/preview_master.png" alt="" width="96" align="right">
-
 # Stock Tray
 
-Keep an eye on your stocks from the Windows notification area. The tray icon shows the biggest move in your watchlist, and a notification tells you when a stock moves more than you've chosen.
+[![Release](https://img.shields.io/github/v/release/kreaton/StockTray)](https://github.com/kreaton/StockTray/releases/latest)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+![Windows](https://img.shields.io/badge/platform-Windows-lightgrey)
+![.NET 10](https://img.shields.io/badge/.NET-10-lightgrey)
+![WinForms](https://img.shields.io/badge/UI-WinForms-lightgrey)
+
+![Stock Tray: your watchlist in the Windows notification area](images/banner.png)
+
+**Keep an eye on your stocks from the Windows notification area.**
+
+The tray icon shows the biggest move in your watchlist, and a notification tells you when a stock moves more than you've chosen.
 
 ## Install
 

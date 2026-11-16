@@ -73,10 +73,7 @@ namespace StockTray
                 Width = 90
             });
 
-            foreach (var ticker in current.Tickers)
-            {
-                _grid.Rows.Add(ticker.Symbol, ticker.DisplayName, ticker.ThresholdPercent);
-            }
+            FillGrid(current.Tickers);
 
             Controls.Add(_grid);
 
@@ -157,6 +154,28 @@ namespace StockTray
             };
             Controls.Add(_tickerQuoteUrlBox);
 
+            var importButton = new Button
+            {
+                Text = "Import...",
+                Location = new Point(12, 472),
+                Width = 76
+            };
+            importButton.Click += OnImport;
+            Controls.Add(importButton);
+
+            var exportButton = new Button
+            {
+                Text = "Export...",
+                Location = new Point(92, 472),
+                Width = 76
+            };
+            exportButton.Click += OnExport;
+            Controls.Add(exportButton);
+
+            var toolTip = new ToolTip();
+            toolTip.SetToolTip(importButton, "Load settings from a JSON file into this dialog. Press OK to apply them.");
+            toolTip.SetToolTip(exportButton, "Save the settings shown in this dialog to a JSON file.");
+
             var okButton = new Button
             {
                 Text = "OK",
@@ -184,6 +203,85 @@ namespace StockTray
 
         private void OnOk(object? sender, EventArgs e)
         {
+            ResultSettings = BuildSettingsFromControls();
+            AutoStartManager.SetEnabled(_launchAtStartupCheck.Checked);
+        }
+
+        private void FillGrid(IEnumerable<TickerConfig> tickers)
+        {
+            _grid.Rows.Clear();
+            foreach (var ticker in tickers)
+            {
+                _grid.Rows.Add(ticker.Symbol, ticker.DisplayName, ticker.ThresholdPercent);
+            }
+        }
+
+        private void LoadControls(StockSettings settings)
+        {
+            FillGrid(settings.Tickers);
+            _intervalUpDown.Value = Math.Min(Math.Max(settings.PollIntervalMinutes, 1), 120);
+            _soundCheck.Checked = settings.PlaySound;
+            _marketHomeUrlBox.Text = settings.MarketHomeUrl;
+            _tickerQuoteUrlBox.Text = settings.TickerQuoteUrlTemplate;
+        }
+
+        private void OnExport(object? sender, EventArgs e)
+        {
+            _grid.EndEdit();
+
+            using var dialog = new SaveFileDialog
+            {
+                Title = "Export Stock Tray settings",
+                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+                DefaultExt = "json",
+                FileName = $"StockTray-settings-{DateTime.Now:yyyy-MM-dd}.json",
+                OverwritePrompt = true
+            };
+            if (dialog.ShowDialog(this) != DialogResult.OK) return;
+
+            try
+            {
+                BuildSettingsFromControls().ExportTo(dialog.FileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, $"Could not export settings:\n\n{ex.Message}",
+                    "Export failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void OnImport(object? sender, EventArgs e)
+        {
+            using var dialog = new OpenFileDialog
+            {
+                Title = "Import Stock Tray settings",
+                Filter = "JSON files (*.json)|*.json|All files (*.*)|*.*",
+                CheckFileExists = true
+            };
+            if (dialog.ShowDialog(this) != DialogResult.OK) return;
+
+            StockSettings imported;
+            try
+            {
+                imported = StockSettings.ImportFrom(dialog.FileName);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, $"Could not import settings:\n\n{ex.Message}",
+                    "Import failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            _grid.CancelEdit();
+            LoadControls(imported);
+
+            MessageBox.Show(this,
+                $"Imported {imported.Tickers.Count} ticker(s) and general settings.\n\nPress OK to apply them, or Cancel to discard.",
+                "Settings imported", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private StockSettings BuildSettingsFromControls()
+        {
             var tickers = new List<TickerConfig>();
 
             foreach (DataGridViewRow row in _grid.Rows)
@@ -209,7 +307,7 @@ namespace StockTray
             string marketHomeUrl = _marketHomeUrlBox.Text.Trim();
             string tickerQuoteUrlTemplate = _tickerQuoteUrlBox.Text.Trim();
 
-            ResultSettings = new StockSettings
+            return new StockSettings
             {
                 Tickers = tickers,
                 PollIntervalMinutes = (int)_intervalUpDown.Value,
@@ -217,8 +315,6 @@ namespace StockTray
                 MarketHomeUrl = marketHomeUrl.Length > 0 ? marketHomeUrl : new StockSettings().MarketHomeUrl,
                 TickerQuoteUrlTemplate = tickerQuoteUrlTemplate.Length > 0 ? tickerQuoteUrlTemplate : new StockSettings().TickerQuoteUrlTemplate
             };
-
-            AutoStartManager.SetEnabled(_launchAtStartupCheck.Checked);
         }
     }
 }

@@ -51,6 +51,7 @@ Right-click the icon and choose **Settings...**.
 - **Sound:** play a sound when an alert fires. On by default.
 - **Start automatically when Windows starts.**
 - **Links:** the pages opened from the menu, if you prefer another site to Yahoo Finance. In the per-stock link, `%ASIN%` is replaced with the symbol.
+- **Import... / Export...:** save your settings to a JSON file, or load them from one, for example to move your watchlist to another PC. An import fills in the dialog, and nothing changes until you press OK. The start-with-Windows option is not included.
 
 ## Where the prices come from
 

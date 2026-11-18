@@ -5,6 +5,9 @@
 ![Windows](https://img.shields.io/badge/platform-Windows-lightgrey)
 ![.NET 10](https://img.shields.io/badge/.NET-10-lightgrey)
 ![WinForms](https://img.shields.io/badge/UI-WinForms-lightgrey)
+[![GitHub stars](https://img.shields.io/github/stars/kreaton/StockTray?style=flat&logo=github&color=yellow)](https://github.com/kreaton/StockTray/stargazers)
+
+⭐ If Stock Tray earns a place on your machine, [star it on GitHub](https://github.com/kreaton/StockTray) — it's free, made by one developer, and stars are how other people find it.
 
 ![Stock Tray: your watchlist in the Windows notification area](images/banner.png)
 
